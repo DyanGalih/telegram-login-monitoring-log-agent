@@ -1,3 +1,7 @@
+Here’s the updated `README.md` with notes about storing the script in a GitHub repository:
+
+---
+
 # Telegram Login Monitoring Log Agent
 
 ## Overview
@@ -29,91 +33,48 @@ The **Telegram Login Monitoring Log Agent** is a Bash script designed to send a 
 
    For other distributions, use the appropriate package manager.
 
-2. **Save the Script**
+2. **Clone the Repository**
 
-   Save the script to `/etc/profile.d/` to ensure it runs for each SSH login.
-
-   ```bash
-   sudo nano /etc/profile.d/telegram_monitor.sh
-   ```
-
-3. **Add the Script Content**
-
-   Paste the following script into the file:
+   Clone the repository to your local system:
 
    ```bash
-   #!/bin/bash
-   #
-   # Telegram Monitor Agent
-   #
-   # @Author       @Bimosaurus - bimosaurus@gmail.com
-   # @ModifiedBy   @DyanGalih - dyan.galih@gmail.com
-   # @version      0.0.2
-   # @date         2018-12-11
-   #
-   # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   # FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-   # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-   # THE SOFTWARE.
-
-   # Chat Id
-   CHAT_ID=[CHAT_ID]
-
-   # Telegram token
-   TOKEN=[TELEGRAM_BOT_TOKEN]
-
-   # Default Timeout
-   TIMEOUT="10"
-
-   # Set Timezone
-   TZ=[TZ]
-
-   # Endpoint Telegram API
-   URL="https://api.telegram.org/bot$TOKEN/sendMessage"
-
-   CONVERT_TIMEZONE=$(TZ="$TZ" date)
-
-   if [ -n "$SSH_CLIENT" ]; then
-     IP=$(echo "$SSH_CLIENT" | awk '{print $1}')
-     PORT=$(echo "$SSH_CLIENT" | awk '{print $3}')
-     HOSTNAME=$(hostname -f)
-     IPADDR=$(hostname -I | awk '{print $2}')
-
-     # Check and adjust IPADDR if it displays incorrectly
-     # Replace '{print $2}' with the correct index if necessary, e.g., '{print $1}', '{print $3}'
-     IPADDR=$(hostname -I | awk '{print $1}')  # Adjust if needed
-
-     # Fetch IP information and store in a variable
-     IPINFO=$(curl -s "http://ipinfo.io/$IP")
-
-     # Extract values from the JSON response
-     CITY=$(echo "$IPINFO" | jq -r '.city')
-     REGION=$(echo "$IPINFO" | jq -r '.region')
-     COUNTRY=$(echo "$IPINFO" | jq -r '.country')
-     ORG=$(echo "$IPINFO" | jq -r '.org')
-
-     TEXT="Login Date: $CONVERT_TIMEZONE %0AUser: ${USER} %0AHostname: $HOSTNAME %0AServer IP: $IPADDR %0AClient IP: $IP %0AOrganization:  $ORG %0ACity: $CITY, $REGION, $COUNTRY %0APort: $PORT"
-
-     curl -s --max-time $TIMEOUT -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=$TEXT" "$URL" > /dev/null
-   fi
+   git clone git@github.com:DyanGalih/telegram-login-monitoring-log-agent.git.git
    ```
 
-   Replace `[CHAT_ID]`, `[TELEGRAM_BOT_TOKEN]`, and `[TZ]` with your actual values.
+   Replace `git@github.com:DyanGalih/telegram-login-monitoring-log-agent.git.git` with the actual URL of your GitHub repository.
 
-4. **Save and Exit**
+3. **Copy the Script**
 
-   Save the file and exit the editor (for `nano`, press `CTRL+X`, then `Y`, and `Enter`).
+   Navigate to the repository directory and copy the script to `/etc/profile.d/`:
 
-5. **No Need to Set the Script as Executable**
+   ```bash
+   cd telegram-login-monitoring-log-agent
+   sudo cp login.sh /etc/profile.d/
+   ```
+
+4. **No Need to Set the Script as Executable**
 
    The script will be sourced automatically for each user login because files in `/etc/profile.d/` are sourced by login shells. There’s no need to make the script executable explicitly.
 
+## Configuration
+
+Edit the `login.sh` script to configure the following variables:
+
+- **`CHAT_ID`**: Your Telegram chat ID where notifications will be sent.
+- **`TOKEN`**: The token for your Telegram bot.
+- **`TZ`**: The time zone for the timestamp (e.g., `America/New_York`).
+
+Example configuration within `login.sh`:
+
+```bash
+CHAT_ID="123456789"
+TOKEN="your-telegram-bot-token"
+TZ="America/New_York"
+```
+
 ## Troubleshooting
 
-- **Incorrect IP Address**: If `IPADDR` displays the wrong IP address, verify the correct index for `hostname -I`. The default script uses `{print $2}`, but this may need adjustment based on your system’s output. Check the output of `hostname -I` and modify `{print $2}` to the appropriate index (e.g., `{print $1}`, `{print $3}`).
+- **Incorrect IP Address**: If `IPADDR` displays the wrong IP address, verify the correct index for `hostname -I`. The script uses `{print $2}`, but this may need adjustment based on your system’s output. Check the output of `hostname -I` and modify `{print $2}` to the appropriate index (e.g., `{print $1}`, `{print $3}`).
 
 ## Usage
 
@@ -132,6 +93,6 @@ The software is provided "as is", without warranty of any kind. See the [LICENSE
 
 - **0.0.2** (2018-12-11)
 
----
+## Repository
 
-Feel free to make further adjustments as needed!
+- GitHub Repository: [git@github.com:DyanGalih/telegram-login-monitoring-log-agent.git](git@github.com:DyanGalih/telegram-login-monitoring-log-agent.git)
